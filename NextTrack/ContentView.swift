@@ -9,35 +9,37 @@ import SwiftUI
 
 
 struct ContentView: View {
-    @State private var animated = false
+    @State private var isAnimated = false
+    var duration: CGFloat = 0.4
+    var iconName = "play.fill"
     
     var body: some View {
         Button {
-            withAnimation(.bouncy(duration: 0.4, extraBounce: 0.2)) {
-                animated = true
+            withAnimation(.bouncy(duration: duration, extraBounce: 0.2)) {
+                isAnimated = true
             }
         
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                animated = false
+            DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
+                isAnimated = false
             }
         } label: {
             HStack(spacing: 0) {
-                if animated {
-                    Image(systemName: "play.fill")
+                if isAnimated {
+                    Image(systemName: iconName)
                         .font(.largeTitle)
                         .foregroundStyle(.blue)
                         .padding(.leading, -4)
                         .transition(.scale(scale: 0, anchor: .leading))
                 }
             
-                Image(systemName: "play.fill")
+                Image(systemName: iconName)
                     .font(.largeTitle)
                     .foregroundStyle(.blue)
                     .padding(.leading, -4)
                 
                 
-                if !animated {
-                    Image(systemName: "play.fill")
+                if !isAnimated {
+                    Image(systemName: iconName)
                         .font(.largeTitle)
                         .foregroundStyle(.blue)
                         .padding(.leading, -4)
