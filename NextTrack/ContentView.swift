@@ -10,43 +10,40 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var isAnimated = false
-    var duration: CGFloat = 0.4
-    var iconName = "play.fill"
+    private var iconName = "play.fill"
+    
+    private var width: CGFloat = 62
     
     var body: some View {
-        Button {
-            withAnimation(.bouncy(duration: duration, extraBounce: 0.2)) {
-                isAnimated = true
-            }
+        let playWidth = width / 2
         
-            DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
+        Button {
+            withAnimation(.interpolatingSpring(stiffness: 170, damping: 15)) {
+                isAnimated = true
+            } completion: {
                 isAnimated = false
             }
         } label: {
             HStack(spacing: 0) {
-                if isAnimated {
-                    Image(systemName: iconName)
-                        .font(.largeTitle)
-                        .foregroundStyle(.blue)
-                        .padding(.leading, -4)
-                        .transition(.scale(scale: 0, anchor: .leading))
-                }
-            
                 Image(systemName: iconName)
-                    .font(.largeTitle)
-                    .foregroundStyle(.blue)
-                    .padding(.leading, -4)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: isAnimated ? playWidth : .zero)
+                    .opacity(isAnimated ? 1 : 0)
                 
+                Image(systemName: iconName)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: playWidth)
                 
-                if !isAnimated {
-                    Image(systemName: iconName)
-                        .font(.largeTitle)
-                        .foregroundStyle(.blue)
-                        .padding(.leading, -4)
-                        .transition(.scale(scale: 0, anchor: .trailing).combined(with: .opacity))
-                }
+                Image(systemName: iconName)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: isAnimated ? 0.5 : playWidth)
+                    .opacity(isAnimated ? 0 : 1)
             }
         }
+        .frame(width: width)
     }
 }
 
