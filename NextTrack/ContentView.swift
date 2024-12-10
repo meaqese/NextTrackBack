@@ -7,9 +7,27 @@
 
 import SwiftUI
 
+struct PlayNextBackgroundButtonStyle: ButtonStyle {
+    @Binding var isAnimated: Bool
+    
+    func makeBody(configuration: Configuration) -> some View {
+        ZStack {
+            Circle()
+                .fill(.gray)
+                .frame(width: 90)
+                .opacity(isAnimated ? 0.15 : 0)
+            
+            configuration.label
+        }
+        .scaleEffect(isAnimated ? 0.86 : 1)
+        .animation(.easeInOut(duration: 0.22), value: isAnimated)
+    }
+}
+
 
 struct ContentView: View {
     @State private var isAnimated = false
+    @State private var isBackAnimated = false
     private var iconName = "play.fill"
     
     private var width: CGFloat = 62
@@ -18,6 +36,12 @@ struct ContentView: View {
         let playWidth = width / 2
         
         Button {
+            isBackAnimated = true
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.22) {
+                isBackAnimated = false
+            }
+            
             withAnimation(.interpolatingSpring(stiffness: 170, damping: 15)) {
                 isAnimated = true
             } completion: {
@@ -44,6 +68,7 @@ struct ContentView: View {
             }
         }
         .frame(width: width)
+        .buttonStyle(PlayNextBackgroundButtonStyle(isAnimated: $isBackAnimated))
     }
 }
 
