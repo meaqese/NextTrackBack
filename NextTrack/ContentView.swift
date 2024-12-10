@@ -38,7 +38,7 @@ struct ContentView: View {
         Button {
             isBackAnimated = true
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.22) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 isBackAnimated = false
             }
             
