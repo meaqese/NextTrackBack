@@ -8,7 +8,9 @@
 import SwiftUI
 
 struct PlayNextBackgroundButtonStyle: ButtonStyle {
-    @Binding var isAnimated: Bool
+    @State private var isAnimated = false
+    
+    private var duration = 0.22
     
     func makeBody(configuration: Configuration) -> some View {
         ZStack {
@@ -20,7 +22,16 @@ struct PlayNextBackgroundButtonStyle: ButtonStyle {
             configuration.label
         }
         .scaleEffect(isAnimated ? 0.86 : 1)
-        .animation(.easeInOut(duration: 0.22), value: isAnimated)
+        .animation(.easeOut(duration: duration * 2), value: isAnimated)
+        .onChange(of: configuration.isPressed) { _, newValue in
+            if newValue {
+                isAnimated = true
+            } else {
+                DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
+                    isAnimated = false
+                }
+            }
+        }
     }
 }
 
@@ -36,12 +47,6 @@ struct ContentView: View {
         let playWidth = width / 2
         
         Button {
-            isBackAnimated = true
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                isBackAnimated = false
-            }
-            
             withAnimation(.interpolatingSpring(stiffness: 170, damping: 15)) {
                 isAnimated = true
             } completion: {
@@ -68,7 +73,7 @@ struct ContentView: View {
             }
         }
         .frame(width: width)
-        .buttonStyle(PlayNextBackgroundButtonStyle(isAnimated: $isBackAnimated))
+        .buttonStyle(PlayNextBackgroundButtonStyle())
     }
 }
 
